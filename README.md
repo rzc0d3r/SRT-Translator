@@ -1,9 +1,11 @@
 # SRT-Translator
 SRT-Translator - Free and fast .srt subtitle translator implemented in Python
 
+![](img/project_preview.png)
+
 # How to use
 
-### Installing python and libraries
+### Installing python and libraries (requires at first startup)
 
 > You can skip this step if you use the compiled executable file from the release
 
