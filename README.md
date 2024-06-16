@@ -25,6 +25,6 @@ pip install -r requirements.txt
 
 # Additional information
 1. Your .srt file must be perfect in terms of partitioning, and the program's behavior will be unpredictable!!!
-2. May not be stable at the moment (It will be better in the future)
+2. Currently, the project may be unstable and the translation is not very accurate (all will be better in the future)
 3. **I did this as I was pissed off with the crooked and paid subtitle translation sites!!!**
 4. I highly recommend using this project together with [**WinWhisper**](https://github.com/GewoonJaap/WinWhisper)!
