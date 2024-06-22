@@ -88,7 +88,7 @@ class SRTTranslator(object):
         # init translator object
         self.translator = GoogleTranslator(self.source_lang, self.target_lang)
 
-    def _translate_srt_batch(self, srt_batch: list[SRT_Block]):
+    def _translate_srt_batch(self, srt_batch): # srt_batch: list[SRT_Block]
         text_batch = ''
         for srt_block in srt_batch:
             text_batch += srt_block.subtitle_text+'\n#\n'
