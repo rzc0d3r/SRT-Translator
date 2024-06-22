@@ -3,6 +3,8 @@ SRT-Translator - Free and fast .srt subtitle translator implemented in Python
 
 ![](img/project_preview.png)
 
+---
+
 # How to use
 
 ### Installing python and libraries (requires at first startup)
@@ -17,11 +19,15 @@ SRT-Translator - Free and fast .srt subtitle translator implemented in Python
 pip install -r requirements.txt
 ```
 
-3. Use the console to open _main.py_ with arguments (Read more [here](wiki/CommandLineArguments.md))
+3. Use the console to open _main.py_ with arguments (Read more [here](wiki/CommandLineArguments.md)) or double-click main.py (It will switch to [MBCI mode](wiki/MBCI-Inferface.md))
 
-4. Wait for all subtitle blocks to be translated...
+4. Wait for all subtitle blocks to be translated:
+
+![](img/finished_translation.png)
 
 5. Get the translated subtitle file, which will be located at the path You specified in the startup arguments!
+
+---
 
 # Additional information
 1. Your .srt file must be perfect in terms of partitioning, and the program's behavior will be unpredictable!!!
