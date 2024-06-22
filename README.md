@@ -22,6 +22,8 @@ pip install -r requirements.txt
 3. Use the console to open _main.py_ with arguments (Read more [here](wiki/CommandLineArguments.md)) or double-click main.py (It will switch to [MBCI mode](wiki/MBCI-Inferface.md))
 > NOTE: When starting a project through the console with arguments, **you can use languages not specified** in **MBCI mode**
 
+> A list of available languages can be obtained [here](wiki/Available-Languages.md)
+
 4. Wait for the subtitle translation:
 
 ![](img/finished_translation.png)
