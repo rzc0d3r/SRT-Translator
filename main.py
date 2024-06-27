@@ -3,8 +3,6 @@ from modules.SRT import *
 from modules.SharedTools import *
 from modules.ProgressBar import ProgressBar, CLASSIC_STYLE
 
-#from requests.exceptions import 
-
 from threading import Thread
 from colorama import Fore, init as colorama_init
 
@@ -202,7 +200,7 @@ def main():
                     translated_srt_data.add_block(srt_block)
             console_log(f'The subtitles were translated in {Fore.CYAN}{round(time.time()-exec_start_time, 2)}{Fore.RESET} second!!!', INFO, False)
             SRT_Manager.save_to_file(translated_srt_data, args['output_file'])
-            console_log(f'Saved to: {Fore.LIGHTYELLOW_EX}{args['output_file']}{Fore.RESET}', WARN)
+            console_log(f'Saved to: {Fore.LIGHTYELLOW_EX}{args["output_file"]}{Fore.RESET}', WARN)
 
     except Exception as E:
         traceback_string = traceback.format_exc()
