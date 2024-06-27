@@ -1,4 +1,4 @@
-import colorama
+from colorama import Fore
 
 import os
 
@@ -23,28 +23,30 @@ class MenuAction(object):
             self.function()
 
 class OptionAction(object):
-    def __init__(self, args, title, action, args_names, choices=[], default_value=None):
+    def __init__(self, args, title, action, args_names, choices=[], default_value=None, data_type=str):
         self.args = args
         self.title = title
         self.action = action
         self.value = default_value
         self.choices = choices
         self.args_names = args_names
-        
+        self.data_type = data_type
+
     def render_title(self):
         if self.action in ['store_true', 'choice']:
-            return f'{self.title} (selected: {colorama.Fore.YELLOW}{self.value}{colorama.Fore.RESET})'
+            return f'{self.title} (selected: {Fore.YELLOW}{self.value}{Fore.RESET})'
         elif self.action == 'manual_input':
-            return f'{self.title} (saved: {colorama.Fore.YELLOW}{self.value}{colorama.Fore.RESET})'
+            return f'{self.title} (saved: {Fore.YELLOW}{self.value}{Fore.RESET})'
         elif self.action == 'bool_switch':
             if self.args[self.args_names.replace('-', '_')]:
-                return f'{self.title} {colorama.Fore.GREEN}(enabled){colorama.Fore.RESET}'
-            return f'{self.title} {colorama.Fore.RED}(disabled){colorama.Fore.RESET}'
+                return f'{self.title} {Fore.GREEN}(enabled){Fore.RESET}'
+            return f'{self.title} {Fore.RED}(disabled){Fore.RESET}'
         
     def run(self):
         if self.action == 'bool_switch':
             self.args[self.args_names.replace('-', '_')] = not self.args[self.args_names.replace('-', '_')]
             return True
+        execution = True
         while True:
             clear_console()
             print(self.title+'\n')
@@ -60,8 +62,16 @@ class OptionAction(object):
                 print()
             try:
                 if self.action == 'manual_input':
-                    self.value = input('>>> ').strip()
-                    self.args[self.args_names.replace('-', '_')] = self.value # self.args_names is str
+                    while True:
+                        self.value = input('>>> ').strip()
+                        try:
+                            self.value = self.data_type(self.value)
+                            self.args[self.args_names.replace('-', '_')] = self.value # self.args_names is str
+                            execution = False
+                            break
+                        except:
+                            clear_console()
+                if not execution:
                     break
                 index = int(input('>>> ').strip()) - 1
                 self.value = menu_items[index]

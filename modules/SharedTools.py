@@ -1,6 +1,6 @@
-import colorama
+from colorama import Fore, Style, init as colorama_init
 
-colorama.init()
+colorama_init()
 
 class LoggerType:
     def __init__(self, sborder, eborder, title, color, fill_text):
@@ -12,13 +12,13 @@ class LoggerType:
 
     @property
     def data(self):
-        return self.sborder + self.color + self.title + colorama.Style.RESET_ALL + self.eborder
+        return self.sborder + self.color + self.title + Fore.RESET + self.eborder
 
-ERROR = LoggerType('[ ', ' ]', 'FAILED', colorama.Fore.RED, True)
-OK = LoggerType('[   ', '   ]', 'OK', colorama.Fore.GREEN, False)
-INFO = LoggerType('[  ', '  ]', 'INFO', colorama.Fore.LIGHTBLACK_EX, True)
-DEVINFO = LoggerType('[ ', ' ]', 'DEBUG', colorama.Fore.CYAN, True)
-WARN = LoggerType('[  ', '  ]', 'WARN', colorama.Fore.YELLOW, False)
+ERROR = LoggerType('[ ', ' ]', 'FAILED', Fore.RED, True)
+OK = LoggerType('[   ', '   ]', 'OK', Fore.GREEN, False)
+INFO = LoggerType('[  ', '  ]', 'INFO', Fore.LIGHTBLACK_EX, True)
+DEVINFO = LoggerType('[ ', ' ]', 'DEBUG', Fore.CYAN, True)
+WARN = LoggerType('[  ', '  ]', 'WARN', Fore.YELLOW, False)
 
 def console_log(text='', logger_type=None, fill_text=None):
     if isinstance(logger_type, LoggerType):
@@ -31,7 +31,7 @@ def console_log(text='', logger_type=None, fill_text=None):
         if logger_type.fill_text and fill_text is None:
             fill_text = True
         if logger_type.fill_text and fill_text:
-            print(logger_type.data + ' ' + logger_type.color + text[ni:] + colorama.Style.RESET_ALL)
+            print(logger_type.data + ' ' + logger_type.color + text[ni:] + Fore.RESET)
         else:
             print(logger_type.data + ' ' + text[ni:])
     else:

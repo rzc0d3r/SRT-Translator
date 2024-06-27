@@ -24,7 +24,7 @@ pip install -r requirements.txt
 
 > A list of available languages can be obtained [here](wiki/Available-Languages.md)
 
-4. Wait for the subtitle translation:
+4. Wait for the subtitle translation (When the progress bar reaches 100%, it will be replaced with information about the time spent on translation!):
 
 ![](img/finished_translation.png)
 
@@ -34,6 +34,5 @@ pip install -r requirements.txt
 
 # Additional information
 1. Your .srt file must be perfect in terms of partitioning, and the program's behavior will be unpredictable!!!
-2. Currently, the project may be unstable and the translation is not very accurate (all will be better in the future)
-3. **I did this as I was pissed off with the crooked and paid subtitle translation sites!!!**
-4. I highly recommend using this project together with [**WinWhisper**](https://github.com/GewoonJaap/WinWhisper) or [Whisper-Standalone-Win](https://github.com/Purfview/whisper-standalone-win)!
+2. **I did this as I was pissed off with the crooked and paid subtitle translation sites!!!**
+3. I highly recommend using this project together with [**WinWhisper**](https://github.com/GewoonJaap/WinWhisper) or [Whisper-Standalone-Win](https://github.com/Purfview/whisper-standalone-win)!

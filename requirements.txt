@@ -1,3 +1,2 @@
 deep-translator
 colorama
-rich
