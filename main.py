@@ -12,7 +12,7 @@ import platform
 import time
 import sys
 
-VERSION = [f'v1.2.0.0', 1200]
+VERSION = [f'v1.2.0.1', 1201]
 LOGO = f"""
 ███████╗██████╗ ████████╗                                                            
 ██╔════╝██╔══██╗╚══██╔══╝                                                            

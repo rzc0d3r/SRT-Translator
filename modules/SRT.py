@@ -52,7 +52,7 @@ class SRT_Data_Iterator:
 
 class SRT_Manager:
     def save_to_file(srt_data: SRT_Data, path_to_file: str):
-        f = open(path_to_file, 'w', encoding='utf-8')
+        f = open(path_to_file, 'w', encoding='utf-8-sig')
         for srt_block in srt_data:
             if srt_block.subtitle_index == len(srt_data): # removes an unnecessary line break at the end of the file
                 f.write(str(srt_block)+'\n')
@@ -63,7 +63,7 @@ class SRT_Manager:
     def read_from_file(path_to_file):
         srt_data = SRT_Data()
         temp = []
-        f = open(path_to_file, 'r', encoding='utf-8')
+        f = open(path_to_file, 'r', encoding='utf-8-sig')
         for line in f.readlines():
             line = line.strip()
             if line == '':
