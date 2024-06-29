@@ -8,6 +8,7 @@ from colorama import Fore, init as colorama_init
 
 import argparse
 import traceback
+import platform
 import time
 import sys
 
@@ -149,56 +150,53 @@ def main():
             srtt_thread = SRTTranslator(residue_srt_data_thread, args['source_lang'], args['output_lang'])
             srtts.append(srtt_thread)
         
-        # define of what is required for threads
-        class ThreadExceptionInterception: # class for catching an error within the thread
-            def __init__(self):
-                self.thread_exception = None
-                self.thread_index = 0
-
-        # main thread function
-        def thread_translate(srtt: SRTTranslator, thread_index: int, threads_translated_srt_data: dict, progressbar: ProgressBar, tei: ThreadExceptionInterception):
-            try:
-                threads_translated_srt_data[thread_index] = srtt.translate(progressbar)
-            except Exception as E:
-                tei.thread_exception = (E, str(sys.exc_info()[0]))
-                tei.thread_index = thread_index+1
-
         # thread initialization and startup
-        tei = ThreadExceptionInterception()
+        class TranslateThread(Thread):
+            def __init__(self, srtt: SRTTranslator, progressbar: ProgressBar):
+                Thread.__init__(self)
+                self.srtt = srtt
+                self.results = None
+                self.progressbar = progressbar
+                
+            def run(self):
+                try:
+                    self.results = self.srtt.translate(progressbar)
+                except Exception as E:
+                    console_log(f'[{Fore.MAGENTA}{self.name}{Fore.RESET}] Error: {str(sys.exc_info()[0])}', ERROR, False)
+                    os._exit(-1)  
+
         threads = []
-        threads_translated_srt_data = {}
         progressbar = ProgressBar(len(srt_data), 'Translate progress: ', CLASSIC_STYLE)
 
         exec_start_time = time.time()
         for i in range(THREADS_COUNT):
-            threads.append(Thread(target=thread_translate, args=(srtts[i], i, threads_translated_srt_data, progressbar, tei)))
+            threads.append(TranslateThread(srtts[i], progressbar))
             threads[i].start()
-
+        
         # rendering of translation progress
-        while True:
-            if tei.thread_exception is not None:
-                print('\n')
-                console_log(f'[{Fore.MAGENTA}Thread {Fore.YELLOW}{tei.thread_index}{Fore.RESET}] Error: {tei.thread_exception[1]}', ERROR, False)
-                console_log('Stopping the program...', INFO)
-                break
-            progressbar.render()
-            if progressbar.is_finished:
-                progressbar.render() # fix for 100% progress
-                break
-            time.sleep(0.33)
-
-        # destroying all threads
-        for i in range(THREADS_COUNT):
-            threads[i].join()
+        OK = False
+        try:
+            while True:
+                if progressbar.is_finished:
+                    progressbar.render()
+                    OK = True
+                    break
+                progressbar.render()
+                time.sleep(0.33)
+        except KeyboardInterrupt:
+            os._exit(-1)
 
         # saving translation results to a file
-        if tei.thread_exception is None: # if there were no errors in the threads
+        if OK: # if there were no errors in the threads
             translated_srt_data = SRT_Data()
-            for i in range(THREADS_COUNT):
-                srt_data = threads_translated_srt_data[i]
-                for srt_block in srt_data:
+            for thread in threads:
+                for srt_block in thread.results:
                     translated_srt_data.add_block(srt_block)
-            console_log(f'The subtitles were translated in {Fore.CYAN}{round(time.time()-exec_start_time, 2)}{Fore.RESET} second!!!', INFO, False)
+
+            if platform.system().lower() == 'windows' and platform.release() not in ['10']: # fix for old Windows
+                console_log(f'\nThe subtitles were translated in {Fore.CYAN}{round(time.time()-exec_start_time, 2)}{Fore.RESET} second!!!', INFO, False)
+            else:
+                console_log(f'The subtitles were translated in {Fore.CYAN}{round(time.time()-exec_start_time, 2)}{Fore.RESET} second!!!', INFO, False)
             SRT_Manager.save_to_file(translated_srt_data, args['output_file'])
             console_log(f'Saved to: {Fore.LIGHTYELLOW_EX}{args["output_file"]}{Fore.RESET}', WARN)
 
@@ -209,7 +207,7 @@ def main():
         input('\nPress Enter to exit...')
     else:
         time.sleep(3) # exit-delay
-    sys.exit()
+    sys.exit(1)
 
 if __name__ == '__main__':
     parse_argv() # if Menu, the main function will be called in automatic mode
