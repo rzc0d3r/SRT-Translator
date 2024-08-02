@@ -121,11 +121,12 @@ def parse_argv():
 
 def main():
     try:
+        ecode = 0
         colorama_init()
         srt_data = SRT_Manager.read_from_file(args['input_file'])
         if len(sys.argv) == 1:
             print()
-
+         
         # multithreading initialization
         REQUIRED_SUBTITLE_BLOCKS_CREATE_THREAD = args['subtitle_blocks_create_thread']
         if len(srt_data) < REQUIRED_SUBTITLE_BLOCKS_CREATE_THREAD or len(srt_data)//REQUIRED_SUBTITLE_BLOCKS_CREATE_THREAD == 1:
@@ -201,13 +202,14 @@ def main():
             console_log(f'Saved to: {Fore.LIGHTYELLOW_EX}{args["output_file"]}{Fore.RESET}', WARN)
 
     except Exception as E:
+        ecode = 1
         traceback_string = traceback.format_exc()
         console_log(traceback_string, ERROR)
     if len(sys.argv) == 1:
         input('\nPress Enter to exit...')
     else:
         time.sleep(3) # exit-delay
-    sys.exit(1)
+    sys.exit(ecode)
 
 if __name__ == '__main__':
     parse_argv() # if Menu, the main function will be called in automatic mode
