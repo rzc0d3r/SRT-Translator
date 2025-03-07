@@ -1,5 +1,5 @@
 # SRT-Translator
-SRT-Translator - Free and fast .srt subtitle translator implemented in Python
+SRT-Translator - Free and fast .srt subtitle translator with video and audio transcribing function
 
 ![](img/project_preview.png)
 
