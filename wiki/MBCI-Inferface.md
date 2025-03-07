@@ -18,7 +18,7 @@
 
 > To select the desired item, enter its number from the list after and press Enter.
 
-> The default is ```--source_lang auto --output_lang english --subtitle-blocks-create-thread 10 --transcribe-model medium```, so you need to specify input and output file **manually!!!**
+> The default is ```--source-lang auto --output-lang english --subtitle-blocks-create-thread 10 --transcribe-model medium```, so you need to specify input and output file **manually!!!**
 
 ---
 
