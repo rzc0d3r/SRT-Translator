@@ -9,7 +9,7 @@
 ![Windows](https://github.com/rzc0d3r/SRT-Translator/blob/main/img/main_menu.png)
 
 1. Settings
-2. Start!
+2. Start
 3. Exit
 
 * **Settings** - this is under the startup settings menu
