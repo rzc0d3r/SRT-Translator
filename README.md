@@ -19,7 +19,7 @@ SRT-Translator - Free and fast .srt subtitle translator implemented in Python
 pip install -r requirements.txt
 ```
 
-### 2. Install **CUDA11** libraries
+### 2. Installing **CUDA11** libraries
 
 > You can skip this step if you will not use transcribe mode
 
