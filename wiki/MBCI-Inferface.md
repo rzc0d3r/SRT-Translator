@@ -9,16 +9,16 @@
 ![Windows](https://github.com/rzc0d3r/SRT-Translator/blob/main/img/main_menu.png)
 
 1. Settings
-2. Do it, damn it!
+2. Start!
 3. Exit
 
 * **Settings** - this is under the startup settings menu
-* **Do it, damn it!** - launches the program 
+* **Start** - launches the program 
 * **Exit** - obviously closes the program
 
 > To select the desired item, enter its number from the list after and press Enter.
 
-> The default is ```--source_lang en --output_lang ru --subtitle-blocks-create-thread 50```, so you need to specify input and output file **manually!!!**
+> The default is ```--source_lang auto --output_lang english --subtitle-blocks-create-thread 10 --transcribe-model medium```, so you need to specify input and output file **manually!!!**
 
 ---
 
@@ -38,4 +38,4 @@ Here you are greeted by a menu consisting items (they're all from [CommandLineAr
 
 ![Windows](https://github.com/rzc0d3r/SRT-Translator/blob/main/img/custom_settings_menu.png)
 
-### After customization you should go back to the _Main Menu_ and click on _Do it, damn it!_
+### After customization you should go back to the _Main Menu_ and click on _Start_

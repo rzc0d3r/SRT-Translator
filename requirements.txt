@@ -1,2 +1,4 @@
+ctranslate2==3.24.0
+faster-whisper==0.10.1
 deep-translator
 colorama

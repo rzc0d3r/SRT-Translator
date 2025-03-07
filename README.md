@@ -7,11 +7,11 @@ SRT-Translator - Free and fast .srt subtitle translator implemented in Python
 
 # How to use
 
-### Installing python and libraries (requires at first startup)
+### 1. Installing python and libraries (requires at first startup)
 
 > You can skip this step if you use the compiled executable file from the release
 
-1. Go to the official [Python website](https://www.python.org/downloads) and download the version for your system (the project runs starting with [Python 3.7.0](https://www.python.org/downloads/release/python-370))
+1. Go to the official [Python website](https://www.python.org/downloads) and download the version for your system (the project runs starting with [Python 3.8.0](https://www.python.org/downloads/release/python-380))
 
 2. Next, install/upgrade the Python libraries, in terminal using requirements.txt:
 
@@ -19,20 +19,32 @@ SRT-Translator - Free and fast .srt subtitle translator implemented in Python
 pip install -r requirements.txt
 ```
 
-3. Use the console to open _main.py_ with arguments (Read more [here](wiki/CommandLineArguments.md)) or double-click main.py (It will switch to [MBCI mode](wiki/MBCI-Inferface.md))
-> NOTE: When starting a project through the console with arguments, **you can use languages not specified** in **MBCI mode**
+### 2. Install **CUDA11** libraries
 
-> A list of available languages can be obtained [here](wiki/Available-Languages.md)
+> You can skip this step if you will not use transcribe mode
 
-4. Wait for the subtitle translation (When the progress bar reaches 100%, it will be replaced with information about the time spent on translation!):
+The program will install them by itself, but if by some error it didn't happen, you should download and unpack them manually to the location of the executable file / source code (```main.py``` file)
 
-![](img/finished_translation.png)
+#### Links to archive with libraries
+* [Windows](https://github.com/Purfview/whisper-standalone-win/releases/download/libs/cuBLAS.and.cuDNN_CUDA11_win_v2.zip)
+* [Linux](https://github.com/Purfview/whisper-standalone-win/releases/download/libs/cuBLAS.and.cuDNN_CUDA11_linux_v2.zip)
 
-5. Get the translated subtitle file, which will be located at the path You specified in the startup arguments!
+> The project has not been tested on macOS, maybe if you can find libraries for macOS that match these exactly, maybe everything will work, but macOS support has not been built in at this time!
+
+> Let me know if you find something!
+
+### 3. Finish
+
+The program should now work correctly, but before doing so I recommend reading the rest of the documentation at the links below, especially:
+* Modes of Operation
+* Command Line Arguments
+* MBCI (Menu-based Сonsole Interface)
 
 ---
 
-# Additional information
-1. Your .srt file must be perfect in terms of partitioning, and the program's behavior will be unpredictable!!!
-2. **I did this as I was pissed off with the crooked and paid subtitle translation sites!!!**
-3. I highly recommend using this project together with [**WinWhisper**](https://github.com/GewoonJaap/WinWhisper) or [**Whisper-Standalone-Win**](https://github.com/Purfview/whisper-standalone-win)!
+# Links to all documentation
+
+1. [Modes of operation](wiki/Modes.md)
+2. [Command line arguments](wiki/CommandLineArguments.md)
+3. [MBCI (Menu-based Сonsole Interface)](wiki/MBCI-Inferface.md)
+4. [Available languages](wiki/Available-Languages.md)

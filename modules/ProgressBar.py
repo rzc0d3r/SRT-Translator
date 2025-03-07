@@ -1,6 +1,8 @@
 from colorama import Fore, init as colorama_init
 
+import platform
 import decimal
+import sys
 
 colorama_init()
 
@@ -39,9 +41,17 @@ class ProgressBar:
             advance_char_count = self.progressbar_length
         else:
             advance_char_count = int(self.advance/self.advance_char_coef)
-        advance_percent = round(decimal.Decimal(self.advance/self.total), 2)*100
-        print(f'{self.description}{self.advance_char*advance_char_count}{self.empty_advance_char*(self.progressbar_length-advance_char_count)} {advance_percent}%')
-        print('\033[F', end='')
+        if platform.release() == '7' and sys.platform.startswith('win'): # disable rendering for windows 7 (cmd.exe does not support ASCII control characters)
+            pass
+        else:
+            advance_percent = round(decimal.Decimal(self.advance/self.total), 2)*100
+            print(f'{self.description}{self.advance_char*advance_char_count}{self.empty_advance_char*(self.progressbar_length-advance_char_count)} {advance_percent}%')
+            print('\033[F', end='')
+            if self.is_finished:
+                print()
             
-    def update(self, count):
-        self.advance += count
+    def update(self, count, eq=False):
+        if eq:
+            self.advance = count
+        else:
+            self.advance += count

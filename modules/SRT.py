@@ -1,13 +1,15 @@
 from deep_translator import GoogleTranslator
 
+import re
+
 class SRT_Block:
-    def __init__(self, subtitle_index: int, subtitle_time: str, subtitle_text: str):
+    def __init__(self, subtitle_index: int, subtitle_time: list, subtitle_text: str):
         self.subtitle_index = subtitle_index
         self.subtitle_time = subtitle_time
         self.subtitle_text = subtitle_text
 
     def __str__(self):
-        return '\n'.join([str(self.subtitle_index), self.subtitle_time, self.subtitle_text])
+        return '\n'.join([str(self.subtitle_index), ' --> '.join(self.subtitle_time), self.subtitle_text])
     
 class SRT_Data:
     def __init__(self):
@@ -63,46 +65,74 @@ class SRT_Manager:
     def read_from_file(path_to_file):
         srt_data = SRT_Data()
         temp = []
+        empty_blocks = 0
         f = open(path_to_file, 'r', encoding='utf-8-sig')
         for line in f.readlines():
             line = line.strip()
             if line == '':
-                srt_data.add_block(SRT_Block(int(temp[0]), temp[1], ' '.join(temp[2:])))
+                if temp == []:
+                    empty_blocks += 1
+                elif re.fullmatch(r'[0-9]+:[0-9]{2}:[0-9]{2},[0-9]{3} --> [0-9]+:[0-9]{2}:[0-9]{2},[0-9]{3}', temp[1]) is None:
+                    raise RuntimeError('{0} subtitle block corrupted!'.format(temp[0]))
+                else:
+                    srt_data.add_block(SRT_Block(int(temp[0])-empty_blocks, temp[1].split(' --> '), ' '.join(temp[2:])))
                 temp = []
             else:
                 temp.append(line)
         if temp != []: # in case there is no line break at the end of the file
-            srt_data.add_block(SRT_Block(int(temp[0]), temp[1], ' '.join(temp[2:])))
+            srt_data.add_block(SRT_Block(int(temp[0]), temp[1].split(' --> '), ' '.join(temp[2:])))
         return srt_data
 
+    def compress(srt_data):
+        compressed_srt_data = SRT_Data()
+        old_srt_block = None
+        repeat_count = 0
+        index = 1
+        for srt_block in srt_data:
+            if old_srt_block is not None and srt_block.subtitle_text == old_srt_block.subtitle_text:
+                repeat_count += 1
+            else:
+                if repeat_count > 0:
+                    compressed_srt_data.subtitle_data[-1].subtitle_time[1] = old_srt_block.subtitle_time[1]
+                compressed_srt_data.add_block(SRT_Block(index, srt_block.subtitle_time, srt_block.subtitle_text))
+                repeat_count = 0
+                index += 1
+            old_srt_block = srt_block
+        return compressed_srt_data
+    
 class SRTTranslator(object):
     def __init__(self, srt_data: SRT_Data, source_lang: str, target_lang: str):
         self.srt_data = srt_data
         self.translated_srt_data = SRT_Data()
         self.source_lang = source_lang
         self.target_lang = target_lang
-        # define BATCH SIZEs
-        if len(self.srt_data) < 20:
-            self.BATCH_SIZE = len(self.srt_data)
-        else:
-            self.BATCH_SIZE = 20
-            self.RESIDUE_BATCH_SIZE = len(self.srt_data)-((len(self.srt_data)//self.BATCH_SIZE)*self.BATCH_SIZE)
+        self.translator = GoogleTranslator(self.source_lang, self.target_lang)
+        self.BATCH_SIZE = 1
+        self.RESIDUE_BATCH_SIZE = len(self.srt_data)-((len(self.srt_data)//self.BATCH_SIZE)*self.BATCH_SIZE)
         self.AVAILABLE_BATCHS = len(self.srt_data)//self.BATCH_SIZE
         self.AVAILABLE_RESIDUE_BATCHS = len(self.srt_data)-(self.AVAILABLE_BATCHS*self.BATCH_SIZE)
-        # init translator object
-        self.translator = GoogleTranslator(self.source_lang, self.target_lang)
 
-    def _translate_srt_batch(self, srt_batch): # srt_batch: list[SRT_Block]
-        text_batch = ''
-        for srt_block in srt_batch:
-            text_batch += srt_block.subtitle_text+'\n#\n'
-        translated_text_batch = [line.strip() for line in self.translator.translate(text_batch.strip()).split('#') if line.strip() != '']
+    def _translate_srt_batch(self, srt_batch: list):
+        translated_text_batch = []
+        if self.BATCH_SIZE == 1:
+            if srt_batch != []:
+                translated_text_batch = [self.translator.translate(srt_batch[0].subtitle_text)]
+        else:
+            text_batch = ''
+            for srt_block in srt_batch:
+                text_batch += srt_block.subtitle_text.strip()+'\n----\n'
+            translated_text = self.translator.translate(text_batch)
+            translated_text_batch = []
+            for line in translated_text.split('----'):
+                line = line.strip()
+                if line != '':
+                    translated_text_batch.append(line.strip())
         return translated_text_batch
 
     def translate(self, progressbar=None):
         # bundling
         srt_batchs = []
-        #print(self.srt_data.subtitle_data[-1].subtitle_text)
+        i = 0
         for i in range(1, self.AVAILABLE_BATCHS+1): # for BATCHS
             srt_batchs.append(self.srt_data.get_blocks((i-1)*self.BATCH_SIZE, self.BATCH_SIZE*i))
         srt_batchs.append(self.srt_data.get_blocks(self.BATCH_SIZE*i, (self.BATCH_SIZE*i)+self.AVAILABLE_RESIDUE_BATCHS)) # for RESIDUE BATCHS
@@ -112,7 +142,7 @@ class SRTTranslator(object):
             while not close_translate_batch:
                 translated_text_batch = self._translate_srt_batch(srt_batch)
                 if len(translated_text_batch) == len(srt_batch):
-                    for i in range(0, len(srt_batch)):
+                    for i in range(0, len(srt_batch)):         
                         translated_srt_block = SRT_Block(srt_batch[i].subtitle_index, srt_batch[i].subtitle_time, translated_text_batch[i])
                         self.translated_srt_data.add_block(translated_srt_block)
                     if progressbar is not None:
